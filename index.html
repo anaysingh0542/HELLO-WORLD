@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="frame-ancestors *;">
+  <title>Hello from external repo</title>
+</head>
+<body style="font-family:system-ui,Segoe UI,Roboto,sans-serif;margin:0;padding:24px;color:#0b1a2b">
+  <h1 style="color:#0a8f4a;margin:0 0 8px">✅ Hello from the external repo</h1>
+  <p style="margin:0 0 14px">
+    If you can read this inside the AgentOS Playground, AgentOS successfully fetched and
+    rendered an <strong>externally-hosted</strong> UI component.
+  </p>
+  <pre id="info" style="background:#f5f8fc;border:1px solid #c7d4e6;border-radius:8px;
+       padding:12px;font:13px/1.5 ui-monospace,Menlo,monospace;white-space:pre-wrap">loading…</pre>
+  <script>
+    (function () {
+      var sameOrigin = false;
+      try { sameOrigin = location.origin.indexOf("sirioncloud.io") !== -1; } catch (e) {}
+      document.getElementById("info").textContent =
+        "location.origin = " + location.origin + "\n" +
+        "location.href   = " + location.href + "\n" +
+        "in iframe       = " + (window !== window.parent) + "\n" +
+        "referrer        = " + (document.referrer || "(empty)") + "\n" +
+        "ORIGIN VERDICT  = " + (sameOrigin
+          ? "MODEL A — same-origin under sirioncloud.io"
+          : "MODEL B — foreign origin (cross-site to Sirion APIs)");
+      try {
+        window.parent.postMessage({
+          type: "ui_component_user_message",
+          message: "hello-world rendered at origin " + location.origin,
+          llmMessage: JSON.stringify({ origin: location.origin, model: sameOrigin ? "A" : "B" })
+        }, "*");
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>
